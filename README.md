@@ -1,3 +1,13 @@
+---
+title: AI Companion API
+emoji: 🪄
+colorFrom: indigo
+colorTo: pink
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # AI Companion 后端
 
 FastAPI + SQLite + Redis（可选）+ DeepSeek 对话。
