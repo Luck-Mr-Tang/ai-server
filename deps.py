@@ -22,4 +22,12 @@ def get_current_user(
     user = db.get(User, x_user_id)
     if not user:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "user not found")
+    if user.status != "approved":
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, f"account not active: {user.status}")
+    return user
+
+
+def get_super_user(user: User = Depends(get_current_user)) -> User:
+    if user.role != "super":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "super role required")
     return user

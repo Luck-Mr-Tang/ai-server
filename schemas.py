@@ -1,19 +1,53 @@
+import re
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class UserOut(BaseModel):
     id: int
     username: str
     avatar: str
+    role: str = "user"
+    status: str = "approved"
 
     class Config:
         from_attributes = True
 
 
+class AdminUserOut(BaseModel):
+    id: int
+    username: str
+    phone: str
+    avatar: str
+    role: str
+    status: str
+    is_protected: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+_PHONE_RE = re.compile(r"^1[3-9]\d{9}$")
+
+
 class RegisterIn(BaseModel):
     username: str = Field(min_length=2, max_length=32)
+    phone: str = Field(min_length=11, max_length=11)
+    password: str = Field(min_length=6, max_length=64)
+
+    @field_validator("phone")
+    @classmethod
+    def _check_phone(cls, v: str) -> str:
+        if not _PHONE_RE.match(v):
+            raise ValueError("手机号格式不正确，需 11 位且以 1 开头")
+        return v
+
+
+class LoginIn(BaseModel):
+    username: str = Field(min_length=2, max_length=32)
+    password: str = Field(min_length=1, max_length=64)
 
 
 class CharacterIn(BaseModel):

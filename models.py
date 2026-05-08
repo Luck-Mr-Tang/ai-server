@@ -12,6 +12,14 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     avatar: Mapped[str] = mapped_column(String(255), default="")
+    phone: Mapped[str] = mapped_column(String(32), default="", index=True)
+    password_hash: Mapped[str] = mapped_column(String(255), default="")
+    # role: 'super' (审核员) | 'user' (普通用户)
+    role: Mapped[str] = mapped_column(String(16), default="user", index=True)
+    # status: 'pending' | 'approved' | 'rejected' | 'disabled'
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    # 1 = 受保护账号（不可删除，例如内置 admin 测试号）
+    is_protected: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
